@@ -78,10 +78,16 @@ extension SyncerStorage {
         }
     }
 
-    func saveChainParameter(key: String, value: Int?) {
-        _ = try! dbPool.write { db in
-            let parameter = ChainParameter(key: key, value: value)
-            try parameter.insert(db)
-        }
-    }
+   func saveChainParameter(key: String, value: Int?) {
+   	 do {
+   	     try dbPool.write { db in
+   	         let parameter = ChainParameter(key: key, value: value)
+   	         try parameter.insert(db)
+    	    }
+   	 } catch {
+   	     print("保存链参数失败: \(key) = \(String(describing: value)), 错误: \(error)")
+   	     // 可选：记录到崩溃统计但不崩溃
+   	     // Bugly.reportError(error)
+   	 }
+}
 }

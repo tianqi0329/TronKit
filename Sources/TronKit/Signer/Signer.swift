@@ -11,7 +11,7 @@ public class Signer {
         self.privateKey = privateKey
     }
 
-    func signature(hash: Data) throws -> Data {
+    public func signature(hash: Data) throws -> Data {
         try Crypto.ellipticSign(hash, privateKey: privateKey)
     }
 }

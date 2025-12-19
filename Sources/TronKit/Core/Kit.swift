@@ -96,7 +96,7 @@ public extension Kit {
     func transferContract(toAddress: Address, value: Int) -> TransferContract {
         TransferContract(amount: value, ownerAddress: address, toAddress: toAddress)
     }
-
+	//交易
     func transferTrc20TriggerSmartContract(contractAddress: Address, toAddress: Address, amount: BigUInt) -> TriggerSmartContract {
         let transferMethod = TransferMethod(to: toAddress, value: amount)
         let data = transferMethod.encodedABI().hs.hex
@@ -114,6 +114,24 @@ public extension Kit {
         )
     }
 
+	//授权
+	func approveTrc20TriggerSmartContract(contractAddress: Address, spender: Address, amount: BigUInt) -> TriggerSmartContract {
+        let approveMethod = ApproveMethod(spender: spender, value: amount)
+        let data = approveMethod.encodedABI().hs.hex
+        let parameter = ContractMethodHelper.encodedABI(methodId: Data(), arguments: approveMethod.arguments).hs.hex
+
+        return TriggerSmartContract(
+            data: data,
+            ownerAddress: address,
+            contractAddress: contractAddress,
+            callValue: nil,
+            callTokenValue: nil,
+            tokenId: nil,
+            functionSelector: ApproveMethod.methodSignature,
+            parameter: parameter
+        )
+    }
+
     func tagTokens() -> [TagToken] {
         transactionManager.tagTokens()
     }
@@ -122,6 +140,12 @@ public extension Kit {
         let newTransaction = try await transactionSender.sendTransaction(contract: contract, signer: signer, feeLimit: feeLimit)
         transactionManager.handle(newTransaction: newTransaction)
     }
+	//交易返回哈希值
+	func sendAndGetHash(contract: Contract, signer: Signer, feeLimit: Int? = 0) async throws -> String {
+   	 let newTransaction = try await transactionSender.sendTransaction(contract: contract, signer: signer, feeLimit: feeLimit)
+   	 transactionManager.handle(newTransaction: newTransaction)
+   	 return newTransaction.txID.hs.hexString
+	}
 
     func accountActive(address: Address) async throws -> Bool {
         try await feeProvider.isAccountActive(address: address)
