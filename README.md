@@ -45,7 +45,7 @@ TronKit.stop()
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/horizontalsystems/TronKit.Swift.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/tianqi0329/TronKit.git", .upToNextMajor(from: "1.0.0"))
 ]
 ```
 
